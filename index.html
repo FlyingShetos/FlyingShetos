@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html> 
  <head> 
-     <title>Flying Cheetos: Friends & Dash Update</title> 
+     <title>Flying Shetos: Friends & Dash Update</title> 
      <meta charset="utf-8"> 
      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
      <meta name="apple-mobile-web-app-capable" content="yes">
+     <meta name="description" content="Play Flying Shetos - The ultimate flying challenge!">
+     
+     <link rel="canonical" href="https://flyingshetos.github.io/FlyingShetos/" />
+     <meta property="og:url" content="https://flyingshetos.github.io/FlyingShetos/" />
+     <meta property="og:title" content="Flying Shetos" />
+
      <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
      <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet'> 
      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -241,8 +247,7 @@
          <video id="jumpscare-vid">
              <source src="jumpscare.mp4" type="video/mp4">
          </video>
-
-         <div id="mode-select-modal">
+<div id="mode-select-modal">
              <h1 style="color:white; font-family:'Pacifico'; font-size:30px; margin-bottom:10px;">Choose Mode</h1>
              
              <div class="mode-card" style="background:linear-gradient(#f7941d, #d35400);" onclick="startStoryMode()">
@@ -303,7 +308,7 @@
 
          <div id="landing-page"> 
              <div class="update-badge">FRIENDS UPD</div>
-             <h1>Flying Cheetos</h1> 
+             <h1>Flying Shetos</h1> 
              <img src="player.png" class="preview-img" alt="Cheetos" onclick="playNoseSound()" ontouchstart="playNoseSound()"> 
              
              <div class="menu-stats">
@@ -376,22 +381,23 @@
      <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 <script>
         // --- FIREBASE CONFIGURATION ---
+        // UPDATED: BELGIUM SERVER & NEW PROJECT
         const firebaseConfig = {
-            apiKey: "AIzaSyBx7WtHKQW4xqrSul6G345P5fAuDU0Sta4",
-            authDomain: "flying-cheetos.firebaseapp.com",
-            projectId: "flying-cheetos",
-            storageBucket: "flying-cheetos.firebasestorage.app",
-            messagingSenderId: "605294625347",
-            appId: "1:605294625347:web:283b3e8a87273210364af6",
-            measurementId: "G-XWRRK54CJP",
-            databaseURL: "https://flyingcheetos-73e38-default-rtdb.europe-west1.firebasedatabase.app"
+            apiKey: "AIzaSyACfcQJbIHDu_yeax7ALaTTMi7AQGMN0to",
+            authDomain: "flyingshetos.firebaseapp.com",
+            databaseURL: "https://flyingshetos-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "flyingshetos",
+            storageBucket: "flyingshetos.firebasestorage.app",
+            messagingSenderId: "1058129403768",
+            appId: "1:1058129403768:web:346b57362d8954e793b28d",
+            measurementId: "G-6BQ2NQD3WF"
         };
 
         let db = null;
         let auth = null;
         let currentUser = null;
         let unsubscribeChat = null;
-        
+         
         // --- REAL ONLINE VARIABLES ---
         let activeMatchID = null;
         let myOnlineRole = null; 
@@ -403,7 +409,7 @@
         let enemyGhostY = 250; 
         let enemyGhostScore = 0; // For position interpolation
         let lastGhostUpdate = 0;
-        
+         
         // NEW: Timer & State Variables
         let roundStartTime = 0; 
         let isRoundStarting = false;
@@ -415,8 +421,7 @@
 
         // --- FRIENDS DATA ---
         let myFriends = []; // Array of Friend UIDs
-
-        // SAFE INITIALIZATION
+// SAFE INITIALIZATION
         try {
             if (firebaseConfig.apiKey && typeof firebase !== 'undefined') {
                 firebase.initializeApp(firebaseConfig);
@@ -463,7 +468,7 @@
                     if (cloudData.stars > collectedStars) collectedStars = cloudData.stars;
                     if (cloudData.gamesPlayed && cloudData.gamesPlayed > totalGamesPlayed) totalGamesPlayed = cloudData.gamesPlayed;
                     if (cloudData.trophies && cloudData.trophies > onlineTrophies) onlineTrophies = cloudData.trophies;
-                    
+                     
                     if (cloudData.endlessHighScore && cloudData.endlessHighScore > endlessHighScore) {
                         endlessHighScore = cloudData.endlessHighScore;
                         localStorage.setItem('flappyEndlessHighScore', endlessHighScore);
@@ -526,13 +531,13 @@
                 const doc = await docRef.get();
                 if (!doc.exists || endlessHighScore > doc.data().score) {
                      await docRef.set({ 
-                         name: currentUser.displayName, 
-                         score: endlessHighScore, 
-                         photo: currentUser.photoURL,
-                         type: 'endless'
-                     });
+                          name: currentUser.displayName, 
+                          score: endlessHighScore, 
+                          photo: currentUser.photoURL,
+                          type: 'endless'
+                      });
                 }
-                
+                 
                 // B. WEEKLY (weekly_scores)
                 const weekRef = db.collection('weekly_scores_v5_5').doc(currentUser.uid);
                 const weekDoc = await weekRef.get();
@@ -550,20 +555,20 @@
         // --- NEW LEADERBOARD LOGIC (TABS) ---
         window.openLeaderboard = async function(type = 'all_time') {
             document.getElementById('leaderboardModal').style.display = 'block';
-            
+             
             // Tab styling
             document.getElementById('tab-all-time').className = (type === 'all_time' ? 'lb-tab active' : 'lb-tab');
             document.getElementById('tab-weekly').className = (type === 'weekly' ? 'lb-tab active' : 'lb-tab');
 
             const tbody = document.getElementById('leaderboardBody');
             tbody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
-            
+             
             if (!db) { tbody.innerHTML = '<tr><td colspan="3">Offline Mode</td></tr>'; return; }
-            
+             
             try {
                 // CHANGED COLLECTION NAME TO RESET SCORES
                 let collectionName = (type === 'weekly') ? 'weekly_scores_v5_5' : 'scores_v5_5';
-                
+                 
                 const q = await db.collection(collectionName).orderBy('score', 'desc').limit(10).get();
                 tbody.innerHTML = '';
                 let rank = 1;
@@ -583,7 +588,7 @@
             document.getElementById('friendsModal').style.display = 'block';
             const list = document.getElementById('friendsList');
             list.innerHTML = '<div style="text-align:center; color:#aaa;">Loading Friends...</div>';
-            
+             
             if (myFriends.length === 0) {
                 list.innerHTML = '<div style="text-align:center; color:#aaa; margin-top:20px;">No friends added yet.</div>';
                 return;
@@ -592,12 +597,12 @@
             // Fetch Friend Profiles
             try {
                 list.innerHTML = '';
-                
+                 
                 for(let uid of myFriends) {
                     const doc = await db.collection('users').doc(uid).get();
                     if(doc.exists) {
                         const d = doc.data();
-                        
+                         
                         // Check Online Status (Last 5 minutes)
                         let isOnline = false;
                         if(d.lastUpdated) {
@@ -633,7 +638,7 @@
             try {
                 // Search for user by displayName
                 const q = await db.collection('users').where('displayName', '==', nameToFind).limit(1).get();
-                
+                 
                 if(q.empty) {
                     alert("User not found! (Case sensitive)");
                     return;
@@ -647,7 +652,7 @@
 
                 myFriends.push(friendID);
                 await saveUserData(); // Save new list
-                
+                 
                 alert(`Added ${nameToFind} to friends!`);
                 input.value = "";
                 openFriends(); // Refresh list
@@ -704,7 +709,7 @@
         var FPS = 40;
         const CANVAS_WIDTH = 640; 
         let isPaused = false;
-        
+         
         const BOSS_IMG = new Image(); BOSS_IMG.src = 'boss.png'; 
         const BOSS2_IMG = new Image(); BOSS2_IMG.src = 'boss_2.png'; 
         const CHOCO_IMG = new Image(); CHOCO_IMG.src = 'chocolate.png'; 
@@ -717,7 +722,7 @@
         const PORTAL_IMG = new Image(); PORTAL_IMG.src = 'portal.png'; 
         var bottom_bar = new Image(); bottom_bar.src = 'red.png';
         var pipe_piece = new Image(); pipe_piece.src = 'wall.png';
-        
+         
         const backgroundImages = [];
         for (let i = 1; i <= 5; i++) { let img = new Image(); img.src = `bg${i}.png`; backgroundImages.push(img); }
 
@@ -736,7 +741,9 @@
         const noseSound = new Audio('nose.mp3');
         const buttonSound = new Audio('button.mp3');
         const buySound = new Audio('buy.mp3');
-        const dashSound = new Audio('dash.mp3'); // NEW SOUND
+        
+        // --- ADDED: DASH SOUND ---
+        const dashSound = new Audio('dash.mp3'); 
 
         let voidBreathingCount = 0; const MAX_BREATHING = 2;
 
@@ -760,17 +767,17 @@
         const AREA_NAMES = [ "The Beginning", "The SKY", "The SUNSET", "The NIGHT", "The VOID" ];
         const GLITCH_TEXTS = ["thats not the reality", "404", "not found", "wake up", "null", "error"];
         let currentBGIndex = 0; let transitionText = ""; let transitionTimer = 0; let flashColor = null; let flashTimer = 0; let levelReached = 1; 
-        
+         
         let portals = []; 
         const PORTAL_CHANCE = 0.02; 
         let hasPortalSpawnedInThisArea = false;
-        
+         
         let cheatBuffer = ""; let redeemedCodes = [];
         try { redeemedCodes = JSON.parse(localStorage.getItem('flappyRedeemed')) || []; } catch(e) {}
 
         var jump_amount = -7; var max_fall_speed = +8; var acceleration = 0.6;      
         const SUPER_JUMP_AMOUNT = -3.8; const SUPER_ACCELERATION = 0.18; const SUPER_MAX_FALL_SPEED = +3.5;  
-        const VOID_ACCEL = 0.35; const VOID_MAX_FALL = 6.0;    
+        const VOID_ACCEL = 0.35; const VOID_MAX_FALL = 6.0;     
         const MAGNET_RADIUS = 300; const INITIAL_LIVES = 3; let currentLives = 0; 
         const MAX_DESTROY_CHARGES = 2; let wallDestroyCharges = 0; const WALLS_TO_DESTROY = 2; 
         let dashCharges = 0; let isDashActive = false; const DASH_DURATION = 68; let dashTimer = 0;
@@ -795,7 +802,7 @@
         const SLOW_POTION_WIDTH = 30; const SLOW_POTION_HEIGHT = 30;
 
         let collectedStars = 0; let stars = []; const STAR_WIDTH = 20; const STAR_HEIGHT = 20; const STAR_VALUE = 1; 
-        
+         
         // ONLINE VARIABLES
         let onlineTrophies = 0;
         try { onlineTrophies = parseInt(localStorage.getItem('flappyTrophies')) || 0; } catch(e) {}
@@ -803,20 +810,21 @@
         let online_score_player = 0; 
         let online_score_enemy = 0; 
         let online_round = 1;
-        
+         
         let enemyCurrentVisibleScore = 0;
         let enemyHasCrashed = false;
         let myHasCrashed = false;
 
+        // --- UPDATED: RENAMED TO SHETOS ---
         const SKINS = {
-            'default': { src: 'player.png', cost: 0, current: true, name: 'Original Cheetos' }, 
-            'red':     { src: 'player_red.png', cost: 30, current: false, name: 'Cute Cheetos' },
-            'tough':   { src: 'player_tough.png', cost: 150, current: false, name: 'Tough Cheetos' }, 
-            'rich':    { src: 'player_rich.png', cost: 150, current: false, name: 'Rich Cheetos' }, 
-            'doordash':{ src: 'doordash_cheetos.png', cost: 200, current: false, name: 'DoorDash Cheetos' }, 
-            'happy':   { src: 'player_happy.png', cost: 250, current: false, name: 'Happy Cheetos' }, 
-            'yellow':  { src: 'player_yellow.png', cost: 300, current: false, name: 'Terrorist Cheetos' }, 
-            'black':   { src: 'player_black.png', cost: 700, current: false, name: 'Legendary Cheetos' } 
+            'default': { src: 'player.png', cost: 0, current: true, name: 'Original Shetos' }, 
+            'red':     { src: 'player_red.png', cost: 30, current: false, name: 'Cute Shetos' },
+            'tough':   { src: 'player_tough.png', cost: 150, current: false, name: 'Tough Shetos' }, 
+            'rich':    { src: 'player_rich.png', cost: 150, current: false, name: 'Rich Shetos' }, 
+            'doordash':{ src: 'doordash_cheetos.png', cost: 200, current: false, name: 'DoorDash Shetos' }, 
+            'happy':   { src: 'player_happy.png', cost: 250, current: false, name: 'Happy Shetos' }, 
+            'yellow':  { src: 'player_yellow.png', cost: 300, current: false, name: 'Terrorist Shetos' }, 
+            'black':   { src: 'player_black.png', cost: 700, current: false, name: 'Legendary Shetos' } 
         };
 
         const TRAILS = {
@@ -861,7 +869,7 @@
             { id: 'true_end', title: 'THE TRUE END', desc: '???', unlocked: false },
             { id: 'error_death', title: 'OOPS AN ERROR', desc: '???', unlocked: false },
             { id: 'bite_98', title: 'THE BITE OF 98', desc: '???', unlocked: false },
-            { id: 'hardcore', title: 'Hardcore Gamer', desc: 'Beat the game with Original Cheetos', unlocked: false }
+            { id: 'hardcore', title: 'Hardcore Gamer', desc: 'Beat the game with Original Shetos', unlocked: false }
         ];
 
         let savedAchievements = [];
@@ -890,7 +898,7 @@ function MySprite(img_url) {
             else { let mult = (this === bird) ? 1 : speedMultiplier; this.x += this.velocity_x * mult; }
             if (this.oscillate && (this.isText || this.MyImg.complete)) { this.y = this.baseY + Math.sin((Date.now() + this.phase) / 400) * 40; }
             let mult = (this === bird) ? 1 : speedMultiplier;
-            
+             
             // --- DRAW CHECK: IF TEXT ---
             if (this.isText) {
                 if (this.text === "DOWN HERE") {
@@ -901,7 +909,7 @@ function MySprite(img_url) {
                 if (!this.parentPipe) this.x += this.velocity_x * mult; 
                 return; 
             }
-            
+             
             // --- DRAW CHECK: IF ERROR BOX ---
             if (this.isError) {
                 ctx.fillStyle = "red"; ctx.fillRect(this.x, this.y, 100, 100);
@@ -913,7 +921,7 @@ function MySprite(img_url) {
             // --- CRASH FIX: SAFE IMAGE RENDERING ---
             let drawWidth = 50; let drawHeight = 50;
             let imgReady = (this.MyImg && this.MyImg.complete && this.MyImg.naturalWidth !== 0);
-            
+             
             if (imgReady) {
                  drawWidth = this.MyImg.width;
                  drawHeight = this.MyImg.height;
@@ -936,10 +944,10 @@ function MySprite(img_url) {
             ctx.translate(this.x + drawWidth / 2, this.y + drawHeight / 2); 
             ctx.rotate((this.angle * Math.PI) / 180);
             if (this.flipV) ctx.scale(1, -1); if (this.flipH) ctx.scale(-1, 1);
-            
+             
             if (isShieldActive && this === bird) { ctx.beginPath(); ctx.arc(0, 0, drawWidth / 2 + 5, 0, 2 * Math.PI); ctx.fillStyle = 'rgba(0, 255, 255, 0.5)'; ctx.fill(); ctx.closePath(); }
             if (isDashActive && this === bird) { ctx.globalAlpha = 0.5; }
-            
+             
             if (this.visible) {
                 if (imgReady) {
                     ctx.drawImage(this.MyImg, -drawWidth / 2, -drawHeight / 2);
@@ -962,7 +970,7 @@ function MySprite(img_url) {
             else if (thing2.isError) { w2 = 100; h2 = 100; } 
             else if (thing2.MyImg && thing2.MyImg.complete && thing2.MyImg.naturalWidth !== 0) { w2 = thing2.MyImg.width; h2 = thing2.MyImg.height; } 
             else { w2 = thing2.width || 40; h2 = thing2.height || 40; }
-            
+             
             if (thing1.x >= thing2.x + w2 || thing1.x + w1 <= thing2.x) return false;
             if (thing1.y >= thing2.y + h2 || thing1.y + h1 <= thing2.y) return false;
             return true;
@@ -1020,7 +1028,7 @@ function MySprite(img_url) {
             updateMenuStats(); 
             game_mode = 'waiting_for_website'; 
             reset_game();
-            
+             
             currentBGIndex = 0;
             if(backgroundImages[0] && backgroundImages[0].complete) {
                 ctx.drawImage(backgroundImages[0], 0, 0, myCanvas.width, myCanvas.height);
@@ -1045,13 +1053,13 @@ function MySprite(img_url) {
         window.triggerDash = function() {
             if ((currentSkinKey !== 'doordash' && currentSkinKey !== 'black') || dashCharges <= 0 || isDashActive || (game_mode !== 'running' && game_mode !== 'online_match') || isPaused) return;
             dashCharges--; isDashActive = true; dashTimer = DASH_DURATION; 
-            
-            // PLAY DASH SOUND
+             
+            // --- ADDED: PLAY DASH SOUND ---
             if(!sfxMuted) {
                 dashSound.currentTime = 0; 
                 dashSound.play().catch(e => console.log(e));
             }
-            
+             
             triggerFlash("rgba(255,165,0,0.3)");
         }
 
@@ -1066,13 +1074,13 @@ function MySprite(img_url) {
         }
         function showCheatFeedback(text) { let el = document.getElementById('cheat-feedback'); el.innerText = text; el.style.display = 'block'; setTimeout(() => { el.style.display = 'none'; }, 2000); }
         function unlockAchievement(id) { let ach = ALL_ACHIEVEMENTS.find(a => a.id === id); if (ach && !ach.unlocked) { ach.unlocked = true; savedAchievements.push(id); localStorage.setItem('flappyAchievements', JSON.stringify(savedAchievements)); } }
-        
+         
         function startSecretEnding() {
             unlockAchievement('bite_98'); 
             document.getElementById('settings-btn').style.display = 'none'; 
             document.getElementById('dash-btn').style.display = 'none'; 
             document.getElementById('bomb-btn').style.display = 'none';
-            
+             
             game_mode = 'secret_sequence'; secretState = 0; secretTimer = 200; 
             bgMusic.pause(); bgMusic.currentTime = 0; voidMusic.pause(); voidMusic.currentTime = 0; breathingSound.pause(); breathingSound.currentTime = 0;
         }
@@ -1095,7 +1103,7 @@ function MySprite(img_url) {
             document.getElementById('landing-page').style.display = 'none';
             document.getElementById('mode-select-modal').style.display = 'flex';
             document.getElementById('modeTrophyDisplay').innerText = onlineTrophies;
-            
+             
             ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
             if(backgroundImages[0] && backgroundImages[0].complete) {
                 ctx.drawImage(backgroundImages[0], 0, 0, myCanvas.width, myCanvas.height);
@@ -1131,7 +1139,7 @@ function MySprite(img_url) {
             game_mode = 'running';
             isEndless = true; // Flag enabled
             showCheatFeedback("ENDLESS MODE!");
-            
+             
             document.getElementById('settings-btn').style.display = 'block';
             if (currentSkinKey === 'doordash' || currentSkinKey === 'black') { document.getElementById('dash-btn').style.display = 'flex'; } 
             if (currentSkinKey === 'yellow' || currentSkinKey === 'black') { document.getElementById('bomb-btn').style.display = 'flex'; }
@@ -1145,12 +1153,12 @@ function MySprite(img_url) {
             document.getElementById('mode-select-modal').style.display = 'none';
             mainMenuMusic.pause(); 
             mainMenuMusic.currentTime = 0;
-            
+             
             document.getElementById('landing-page').style.display = 'none'; 
             let loadScr = document.createElement('div');
             loadScr.id = "temp-online-loader";
             loadScr.style.position = "absolute"; loadScr.style.top=0; loadScr.style.left=0; loadScr.style.width="100%"; loadScr.style.height="100%"; loadScr.style.background="black"; loadScr.style.color="white"; loadScr.style.display="flex"; loadScr.style.flexDirection="column"; loadScr.style.justifyContent="center"; loadScr.style.alignItems="center"; loadScr.style.fontFamily="'Press Start 2P'"; 
-            
+             
             loadScr.innerHTML = `
                 <div style="margin-bottom:20px;">SEARCHING FOR OPPONENT...</div>
                 <div class="loader-spinner" style="width:40px;height:40px;border:4px solid white;border-top:4px solid transparent;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
@@ -1158,7 +1166,7 @@ function MySprite(img_url) {
                 <style>@keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
             `;
             document.getElementById('game-container').appendChild(loadScr);
-            
+             
             try {
                 const openMatches = await db.collection('matches')
                     .where('status', '==', 'searching')
@@ -1231,7 +1239,7 @@ function MySprite(img_url) {
                             trophyProcessed = false; 
                             startGameLoopOnline();
                         }
-                        
+                         
                         if (myOnlineRole === 'host') {
                             online_score_enemy = data.guestScore || 0;
                             enemyCurrentVisibleScore = online_score_enemy;
@@ -1251,7 +1259,7 @@ function MySprite(img_url) {
                             resetOnlineRound();
                             triggerFlash("white");
                         }
-                        
+                         
                         if ((data.hostWins >= 2 || data.guestWins >= 2) && data.status !== 'ended') {
                              endMatchLogic(data);
                         }
@@ -1292,10 +1300,10 @@ function MySprite(img_url) {
             document.getElementById('p-name').innerText = "YOU (" + myWins + ")";
             document.getElementById('e-name').innerText = opponentName + " (" + enemyWins + ")";
             document.getElementById('p-score').innerText = currentScore;
-            
+             
             if(enemyHasCrashed) document.getElementById('e-score').innerText = online_score_enemy + " (X)";
             else document.getElementById('e-score').innerText = online_score_enemy;
-            
+             
             document.getElementById('online-round-text').innerText = "ROUND " + online_round + " / 3";
         }
 
@@ -1309,21 +1317,21 @@ function MySprite(img_url) {
             pipe_speed = -2;
             speedMultiplier = 1;
             pipe_spawn_timer = 0; // Reset spawn timer
-            
+             
             // TIMER LOGIC
             onlineStartTimer = 3; 
             isRoundStarting = true;
-            
+             
             myHasCrashed = false;
             enemyHasCrashed = false;
-            
+             
             if(activeMatchID) {
                 let updateData = {};
                 if(myOnlineRole === 'host') { updateData.hostStatus = 'alive'; updateData.hostScore = 0; }
                 else { updateData.guestStatus = 'alive'; updateData.guestScore = 0; }
                 db.collection('matches').doc(activeMatchID).update(updateData);
             }
-            
+             
             updateOnlineUI();
             flashTimer = 0;
         }
@@ -1341,7 +1349,7 @@ function MySprite(img_url) {
             let updateData = {};
             if (myOnlineRole === 'host') { updateData.hostStatus = 'crashed'; updateData.hostScore = currentScore; }
             else { updateData.guestStatus = 'crashed'; updateData.guestScore = currentScore; }
-            
+             
             db.collection('matches').doc(activeMatchID).update(updateData).then(() => {
                 checkRoundResult();
             });
@@ -1377,10 +1385,10 @@ function MySprite(img_url) {
 
             if (result === 'win') newHostWins++;
             else if (result === 'loss') newGuestWins++;
-            
+             
             if (currentScore > online_score_enemy) newHostWins = myWins + 1;
             else if (online_score_enemy > currentScore) newGuestWins = enemyWins + 1;
-            
+             
             db.collection('matches').doc(activeMatchID).update({
                 round: online_round + 1,
                 hostWins: newHostWins,
@@ -2024,4 +2032,3 @@ function MySprite(img_url) {
      </script> 
  </body> 
 </html>
-
