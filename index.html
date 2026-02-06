@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html> 
  <head> 
-     <title>Flying Shetos: Friends & Dash Update</title> 
+     <title>Flying Shetos: Endless Update</title> 
      <meta charset="utf-8"> 
      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
      <meta name="apple-mobile-web-app-capable" content="yes">
@@ -69,7 +69,7 @@
 
          /* MAIN MENU */
          #landing-page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('http://s2js.com/img/etc/flappyback.png'); background-size: cover; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; } 
-         .update-badge { background: linear-gradient(45deg, #3498db, #2980b9); color: #fff; padding: 8px 20px; border-radius: 5px; font-size: 20px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 3px; animation: bossPulse 1s infinite; border: 2px solid #fff; font-family: 'Arial Black', sans-serif; }
+         /* REMOVED: .update-badge style */
          #landing-page h1 { color: #FF4500; font-size: 60px; text-shadow: 4px 4px 0px #fff; margin: 0; } 
 
          /* REORGANIZED MENU BUTTONS */
@@ -121,7 +121,7 @@
          .mode-card h3 { font-family: 'Press Start 2P', cursive; margin-bottom: 8px; font-size: 18px; }
          .mode-desc { color: #aaa; font-family: 'Roboto', sans-serif; font-size: 12px; }
          
-         /* ONLINE UI - UPDATED */
+         /* ONLINE UI */
          #online-ui { 
              display: none; 
              position: absolute; 
@@ -145,8 +145,20 @@
          .online-e-box { text-align: right; width: 45%; }
          .online-name { font-size: 10px; color: #ccc; margin-bottom: 5px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
-         /* FULL SCREEN SETTINGS MENU */
-         #pause-menu { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 200; flex-direction: column; align-items: center; justify-content: center; }
+         /* FULL SCREEN SETTINGS MENU - FIXED Z-INDEX */
+         #pause-menu { 
+             display: none; 
+             position: absolute; 
+             top: 0; 
+             left: 0; 
+             width: 100%; 
+             height: 100%; 
+             background: black; 
+             z-index: 10000; /* FIXED: Now covers everything */ 
+             flex-direction: column; 
+             align-items: center; 
+             justify-content: center; 
+         }
          #pause-menu h1 { color: white; font-family: 'Press Start 2P', cursive; margin-bottom: 30px; text-shadow: 4px 4px 0px #f7941d; }
          .pause-options { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
          .toggle-row { display: flex; align-items: center; justify-content: space-between; width: 200px; color: white; font-family: 'Roboto', sans-serif; font-weight: bold; font-size: 18px; }
@@ -204,7 +216,6 @@
          @media (max-width: 640px) {
              #game-container { width: 100vw; height: 75vw; max-height: 100vh; }
              #landing-page h1 { font-size: 30px !important; }
-             .update-badge { font-size: 14px !important; padding: 5px 10px; }
              .enter-btn { font-size: 16px; padding: 8px 5px; }
              .secondary-btn { font-size: 12px; }
              #dash-btn { width: 60px; height: 60px; font-size: 10px; bottom: 10px; right: 10px; }
@@ -222,7 +233,7 @@
                  top: 5px !important; 
                  padding: 5px !important; 
                  font-size: 10px !important;
-                 background: rgba(0,0,0,0.4) !important; /* MORE TRANSPARENT */
+                 background: rgba(0,0,0,0.4) !important; 
                  border: 1px solid rgba(255,255,255,0.5) !important;
              }
          }
@@ -307,7 +318,6 @@
          </div>
 
          <div id="landing-page"> 
-             <div class="update-badge">FRIENDS UPD</div>
              <h1>Flying Shetos</h1> 
              <img src="player.png" class="preview-img" alt="Cheetos" onclick="playNoseSound()" ontouchstart="playNoseSound()"> 
              
@@ -327,7 +337,7 @@
                  <button class="enter-btn secondary-btn btn-full-width" style="background-color: #8e44ad;" onclick="playClickSound(); openChat()">GLOBAL CHAT</button>
              </div>
              
-             <div class="version-text">v5.5 Friends</div>
+             <div class="version-text">v5.6 Endless Update</div>
 
              <div id="achievementsModal" class="modal">
                  <button class="close-btn" onclick="playClickSound(); closeModal('achievementsModal')">X</button>
@@ -381,7 +391,6 @@
      <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 <script>
         // --- FIREBASE CONFIGURATION ---
-        // UPDATED: BELGIUM SERVER & NEW PROJECT
         const firebaseConfig = {
             apiKey: "AIzaSyACfcQJbIHDu_yeax7ALaTTMi7AQGMN0to",
             authDomain: "flyingshetos.firebaseapp.com",
@@ -407,14 +416,14 @@
         let enemyWins = 0;
         let trophyProcessed = false; 
         let enemyGhostY = 250; 
-        let enemyGhostScore = 0; // For position interpolation
+        let enemyGhostScore = 0; 
         let lastGhostUpdate = 0;
          
         // NEW: Timer & State Variables
         let roundStartTime = 0; 
         let isRoundStarting = false;
         let onlineStartTimer = 0;
-        let opponentLastSeen = 0; // For disconnect detection
+        let opponentLastSeen = 0; 
 
         // --- NEW GAME MODE VARIABLES ---
         let isEndless = false;
@@ -474,7 +483,6 @@
                         localStorage.setItem('flappyEndlessHighScore', endlessHighScore);
                     }
 
-                    // Sync Friends
                     if (cloudData.friends) {
                         myFriends = cloudData.friends;
                     }
@@ -496,9 +504,8 @@
                     updateMenuStats();
                     showCheatFeedback("DATA SYNCED!");
                 } else {
-                    // Create doc if not exists to allow "Add Friend" lookup
                     await userRef.set({
-                        displayName: user.displayName, // Important for friend search
+                        displayName: user.displayName, 
                         photo: user.photoURL,
                         lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                     }, {merge: true});
@@ -510,9 +517,8 @@
         async function saveUserData() {
             if (!db || !currentUser) return;
             try {
-                // 1. Save User Profile Data
                 await db.collection('users').doc(currentUser.uid).set({
-                    displayName: currentUser.displayName, // Ensure name is searchable
+                    displayName: currentUser.displayName, 
                     photo: currentUser.photoURL,
                     stars: collectedStars,
                     gamesPlayed: totalGamesPlayed,
@@ -525,8 +531,6 @@
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
 
-                // 2. Update Leaderboards (NEW COLLECTIONS v5_5 to reset scores)
-                // A. ALL TIME (scores)
                 const docRef = db.collection('scores_v5_5').doc(currentUser.uid);
                 const doc = await docRef.get();
                 if (!doc.exists || endlessHighScore > doc.data().score) {
@@ -538,7 +542,6 @@
                       });
                 }
                  
-                // B. WEEKLY (weekly_scores)
                 const weekRef = db.collection('weekly_scores_v5_5').doc(currentUser.uid);
                 const weekDoc = await weekRef.get();
                 if (!weekDoc.exists || endlessHighScore > weekDoc.data().score) {
@@ -552,11 +555,8 @@
             } catch(e) { console.error("Save Error:", e); }
         }
 
-        // --- NEW LEADERBOARD LOGIC (TABS) ---
         window.openLeaderboard = async function(type = 'all_time') {
             document.getElementById('leaderboardModal').style.display = 'block';
-             
-            // Tab styling
             document.getElementById('tab-all-time').className = (type === 'all_time' ? 'lb-tab active' : 'lb-tab');
             document.getElementById('tab-weekly').className = (type === 'weekly' ? 'lb-tab active' : 'lb-tab');
 
@@ -566,9 +566,7 @@
             if (!db) { tbody.innerHTML = '<tr><td colspan="3">Offline Mode</td></tr>'; return; }
              
             try {
-                // CHANGED COLLECTION NAME TO RESET SCORES
                 let collectionName = (type === 'weekly') ? 'weekly_scores_v5_5' : 'scores_v5_5';
-                 
                 const q = await db.collection(collectionName).orderBy('score', 'desc').limit(10).get();
                 tbody.innerHTML = '';
                 let rank = 1;
@@ -582,7 +580,6 @@
             } catch(e) { console.error(e); tbody.innerHTML = '<tr><td colspan="3">Error loading scores.</td></tr>'; }
         }
 
-        // --- FRIENDS LOGIC ---
         window.openFriends = async function() {
             if (!currentUser) return alert("Login to use Friends!");
             document.getElementById('friendsModal').style.display = 'block';
@@ -594,16 +591,12 @@
                 return;
             }
 
-            // Fetch Friend Profiles
             try {
                 list.innerHTML = '';
-                 
                 for(let uid of myFriends) {
                     const doc = await db.collection('users').doc(uid).get();
                     if(doc.exists) {
                         const d = doc.data();
-                         
-                        // Check Online Status (Last 5 minutes)
                         let isOnline = false;
                         if(d.lastUpdated) {
                              const diff = (Date.now() - d.lastUpdated.toDate().getTime()) / 1000 / 60; // Minutes
@@ -624,10 +617,7 @@
                         list.appendChild(row);
                     }
                 }
-            } catch(e) {
-                console.error(e);
-                list.innerHTML = 'Error loading friends.';
-            }
+            } catch(e) { console.error(e); list.innerHTML = 'Error loading friends.'; }
         }
 
         window.addFriend = async function() {
@@ -636,39 +626,25 @@
             if(!nameToFind) return;
 
             try {
-                // Search for user by displayName
                 const q = await db.collection('users').where('displayName', '==', nameToFind).limit(1).get();
-                 
-                if(q.empty) {
-                    alert("User not found! (Case sensitive)");
-                    return;
-                }
+                if(q.empty) { alert("User not found! (Case sensitive)"); return; }
 
                 const friendDoc = q.docs[0];
                 const friendID = friendDoc.id;
-
                 if(friendID === currentUser.uid) return alert("You can't add yourself!");
                 if(myFriends.includes(friendID)) return alert("Already friends!");
 
                 myFriends.push(friendID);
-                await saveUserData(); // Save new list
-                 
+                await saveUserData(); 
                 alert(`Added ${nameToFind} to friends!`);
                 input.value = "";
-                openFriends(); // Refresh list
-
-            } catch(e) {
-                console.error(e);
-                alert("Error searching user.");
-            }
+                openFriends(); 
+            } catch(e) { console.error(e); alert("Error searching user."); }
         }
 
         window.openChat = function() {
             document.getElementById('chatModal').style.display = 'block';
-            if (!db) { 
-                document.getElementById('chat-box').innerHTML = '<div style="color:red; text-align:center;">Offline Mode: Chat unavailable.</div>';
-                return; 
-            }
+            if (!db) { document.getElementById('chat-box').innerHTML = '<div style="color:red; text-align:center;">Offline Mode: Chat unavailable.</div>'; return; }
             if (unsubscribeChat) unsubscribeChat();
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML = '<div style="color:#aaa; text-align:center; padding:10px;">Loading messages...</div>';
@@ -694,9 +670,7 @@
             const text = input.value.trim();
             if (!text) return;
             try {
-                await db.collection('global_chat').add({
-                    text: text, name: currentUser.displayName, photo: currentUser.photoURL, timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                await db.collection('global_chat').add({ text: text, name: currentUser.displayName, photo: currentUser.photoURL, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
                 input.value = '';
             } catch(e) { console.error(e); alert("Could not send message."); }
         }
@@ -726,10 +700,7 @@
         const backgroundImages = [];
         for (let i = 1; i <= 5; i++) { let img = new Image(); img.src = `bg${i}.png`; backgroundImages.push(img); }
 
-        const mainMenuMusic = new Audio('main_menu.mp3'); 
-        mainMenuMusic.loop = true; 
-        mainMenuMusic.volume = 0.3;
-
+        const mainMenuMusic = new Audio('main_menu.mp3'); mainMenuMusic.loop = true; mainMenuMusic.volume = 0.3;
         const flapSound = new Audio('woof.mp3'); flapSound.volume = 0.25; 
         const bgMusic = new Audio('bg_song.mp3'); bgMusic.loop = true; bgMusic.volume = 0.5;
         const voidMusic = new Audio('void.mp3'); voidMusic.loop = true; voidMusic.volume = 1.0; 
@@ -741,14 +712,10 @@
         const noseSound = new Audio('nose.mp3');
         const buttonSound = new Audio('button.mp3');
         const buySound = new Audio('buy.mp3');
-        
-        // --- ADDED: DASH SOUND ---
         const dashSound = new Audio('dash.mp3'); 
 
         let voidBreathingCount = 0; const MAX_BREATHING = 2;
-
-        let musicMuted = false;
-        let sfxMuted = false;
+        let musicMuted = false; let sfxMuted = false;
 
         window.addEventListener('click', () => {
              if(mainMenuMusic.paused && !musicMuted && (game_mode === 'waiting_for_website' || game_mode === 'shop_from_menu')) {
@@ -802,20 +769,16 @@
         const SLOW_POTION_WIDTH = 30; const SLOW_POTION_HEIGHT = 30;
 
         let collectedStars = 0; let stars = []; const STAR_WIDTH = 20; const STAR_HEIGHT = 20; const STAR_VALUE = 1; 
-         
-        // ONLINE VARIABLES
         let onlineTrophies = 0;
         try { onlineTrophies = parseInt(localStorage.getItem('flappyTrophies')) || 0; } catch(e) {}
 
         let online_score_player = 0; 
         let online_score_enemy = 0; 
         let online_round = 1;
-         
         let enemyCurrentVisibleScore = 0;
         let enemyHasCrashed = false;
         let myHasCrashed = false;
 
-        // --- UPDATED: RENAMED TO SHETOS ---
         const SKINS = {
             'default': { src: 'player.png', cost: 0, current: true, name: 'Original Shetos' }, 
             'red':     { src: 'player_red.png', cost: 30, current: false, name: 'Cute Shetos' },
@@ -880,10 +843,10 @@
         let highScore = 0;
         try { highScore = parseInt(localStorage.getItem('flappyHighScore')) || 0; } catch(e) {}
 
-        // --- ENDLESS SCORE VARIABLE ---
         let endlessHighScore = 0;
         try { endlessHighScore = parseInt(localStorage.getItem('flappyEndlessHighScore')) || 0; } catch(e) {}
-function MySprite(img_url) {
+
+        function MySprite(img_url) {
             this.x = 0; this.y = 0; this.visible = true; 
             this.velocity_x = 0; this.velocity_y = 0;
             this.MyImg = new Image(); 
@@ -899,7 +862,6 @@ function MySprite(img_url) {
             if (this.oscillate && (this.isText || this.MyImg.complete)) { this.y = this.baseY + Math.sin((Date.now() + this.phase) / 400) * 40; }
             let mult = (this === bird) ? 1 : speedMultiplier;
              
-            // --- DRAW CHECK: IF TEXT ---
             if (this.isText) {
                 if (this.text === "DOWN HERE") {
                     ctx.fillStyle = (Math.floor(Date.now() / 200) % 2 === 0) ? "rgba(255, 0, 0, 0.5)" : "rgba(255, 255, 0, 0.5)";
@@ -910,7 +872,6 @@ function MySprite(img_url) {
                 return; 
             }
              
-            // --- DRAW CHECK: IF ERROR BOX ---
             if (this.isError) {
                 ctx.fillStyle = "red"; ctx.fillRect(this.x, this.y, 100, 100);
                 ctx.font = "bold 20px Arial"; ctx.fillStyle = "white"; ctx.fillText("ERROR", this.x + 15, this.y + 55);
@@ -918,14 +879,9 @@ function MySprite(img_url) {
                 this.y += this.velocity_y * mult; return;
             }
 
-            // --- CRASH FIX: SAFE IMAGE RENDERING ---
             let drawWidth = 50; let drawHeight = 50;
             let imgReady = (this.MyImg && this.MyImg.complete && this.MyImg.naturalWidth !== 0);
-             
-            if (imgReady) {
-                 drawWidth = this.MyImg.width;
-                 drawHeight = this.MyImg.height;
-            }
+            if (imgReady) { drawWidth = this.MyImg.width; drawHeight = this.MyImg.height; }
 
             if (this === bird && currentTrailKey !== 'trail_none' && (game_mode === 'running' || game_mode === 'boss' || game_mode === 'online_match')) {
                 trailHistory.push({ x: this.x + 5, y: this.y + drawHeight / 2 });
@@ -944,17 +900,11 @@ function MySprite(img_url) {
             ctx.translate(this.x + drawWidth / 2, this.y + drawHeight / 2); 
             ctx.rotate((this.angle * Math.PI) / 180);
             if (this.flipV) ctx.scale(1, -1); if (this.flipH) ctx.scale(-1, 1);
-             
             if (isShieldActive && this === bird) { ctx.beginPath(); ctx.arc(0, 0, drawWidth / 2 + 5, 0, 2 * Math.PI); ctx.fillStyle = 'rgba(0, 255, 255, 0.5)'; ctx.fill(); ctx.closePath(); }
             if (isDashActive && this === bird) { ctx.globalAlpha = 0.5; }
-             
             if (this.visible) {
-                if (imgReady) {
-                    ctx.drawImage(this.MyImg, -drawWidth / 2, -drawHeight / 2);
-                } else {
-                    ctx.fillStyle = "#FF00FF"; 
-                    ctx.fillRect(-20, -20, 40, 40);
-                }
+                if (imgReady) { ctx.drawImage(this.MyImg, -drawWidth / 2, -drawHeight / 2); } 
+                else { ctx.fillStyle = "#FF00FF"; ctx.fillRect(-20, -20, 40, 40); }
             }
             if (!this.oscillate && !this.parentPipe) this.y = this.y + this.velocity_y * mult;
             ctx.restore();
@@ -970,7 +920,6 @@ function MySprite(img_url) {
             else if (thing2.isError) { w2 = 100; h2 = 100; } 
             else if (thing2.MyImg && thing2.MyImg.complete && thing2.MyImg.naturalWidth !== 0) { w2 = thing2.MyImg.width; h2 = thing2.MyImg.height; } 
             else { w2 = thing2.width || 40; h2 = thing2.height || 40; }
-             
             if (thing1.x >= thing2.x + w2 || thing1.x + w1 <= thing2.x) return false;
             if (thing1.y >= thing2.y + h2 || thing1.y + h1 <= thing2.y) return false;
             return true;
@@ -1053,13 +1002,7 @@ function MySprite(img_url) {
         window.triggerDash = function() {
             if ((currentSkinKey !== 'doordash' && currentSkinKey !== 'black') || dashCharges <= 0 || isDashActive || (game_mode !== 'running' && game_mode !== 'online_match') || isPaused) return;
             dashCharges--; isDashActive = true; dashTimer = DASH_DURATION; 
-             
-            // --- ADDED: PLAY DASH SOUND ---
-            if(!sfxMuted) {
-                dashSound.currentTime = 0; 
-                dashSound.play().catch(e => console.log(e));
-            }
-             
+            if(!sfxMuted) { dashSound.currentTime = 0; dashSound.play().catch(e => console.log(e)); }
             triggerFlash("rgba(255,165,0,0.3)");
         }
 
@@ -1080,7 +1023,6 @@ function MySprite(img_url) {
             document.getElementById('settings-btn').style.display = 'none'; 
             document.getElementById('dash-btn').style.display = 'none'; 
             document.getElementById('bomb-btn').style.display = 'none';
-             
             game_mode = 'secret_sequence'; secretState = 0; secretTimer = 200; 
             bgMusic.pause(); bgMusic.currentTime = 0; voidMusic.pause(); voidMusic.currentTime = 0; breathingSound.pause(); breathingSound.currentTime = 0;
         }
@@ -1103,14 +1045,8 @@ function MySprite(img_url) {
             document.getElementById('landing-page').style.display = 'none';
             document.getElementById('mode-select-modal').style.display = 'flex';
             document.getElementById('modeTrophyDisplay').innerText = onlineTrophies;
-             
             ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-            if(backgroundImages[0] && backgroundImages[0].complete) {
-                ctx.drawImage(backgroundImages[0], 0, 0, myCanvas.width, myCanvas.height);
-            } else {
-                ctx.fillStyle = "#4ec0ca"; 
-                ctx.fillRect(0,0,myCanvas.width,myCanvas.height);
-            }
+            if(backgroundImages[0] && backgroundImages[0].complete) { ctx.drawImage(backgroundImages[0], 0, 0, myCanvas.width, myCanvas.height); } else { ctx.fillStyle = "#4ec0ca"; ctx.fillRect(0,0,myCanvas.width,myCanvas.height); }
         }
 
         window.closeModeSelect = function() {
@@ -1120,11 +1056,10 @@ function MySprite(img_url) {
 
         window.startStoryMode = function() {
             document.getElementById('mode-select-modal').style.display = 'none';
-            mainMenuMusic.pause(); 
-            mainMenuMusic.currentTime = 0;
+            mainMenuMusic.pause(); mainMenuMusic.currentTime = 0;
             reset_game();
             game_mode = 'running';
-            isEndless = false; // Flag
+            isEndless = false; 
             document.getElementById('settings-btn').style.display = 'block';
             if (currentSkinKey === 'doordash' || currentSkinKey === 'black') { document.getElementById('dash-btn').style.display = 'flex'; } 
             if (currentSkinKey === 'yellow' || currentSkinKey === 'black') { document.getElementById('bomb-btn').style.display = 'flex'; }
@@ -1133,13 +1068,11 @@ function MySprite(img_url) {
 
         window.startEndlessMode = function() {
             document.getElementById('mode-select-modal').style.display = 'none';
-            mainMenuMusic.pause();
-            mainMenuMusic.currentTime = 0;
+            mainMenuMusic.pause(); mainMenuMusic.currentTime = 0;
             reset_game();
             game_mode = 'running';
-            isEndless = true; // Flag enabled
+            isEndless = true; 
             showCheatFeedback("ENDLESS MODE!");
-             
             document.getElementById('settings-btn').style.display = 'block';
             if (currentSkinKey === 'doordash' || currentSkinKey === 'black') { document.getElementById('dash-btn').style.display = 'flex'; } 
             if (currentSkinKey === 'yellow' || currentSkinKey === 'black') { document.getElementById('bomb-btn').style.display = 'flex'; }
@@ -1151,67 +1084,31 @@ function MySprite(img_url) {
             if (!db) return alert("Database offline!");
 
             document.getElementById('mode-select-modal').style.display = 'none';
-            mainMenuMusic.pause(); 
-            mainMenuMusic.currentTime = 0;
-             
+            mainMenuMusic.pause(); mainMenuMusic.currentTime = 0;
             document.getElementById('landing-page').style.display = 'none'; 
             let loadScr = document.createElement('div');
             loadScr.id = "temp-online-loader";
             loadScr.style.position = "absolute"; loadScr.style.top=0; loadScr.style.left=0; loadScr.style.width="100%"; loadScr.style.height="100%"; loadScr.style.background="black"; loadScr.style.color="white"; loadScr.style.display="flex"; loadScr.style.flexDirection="column"; loadScr.style.justifyContent="center"; loadScr.style.alignItems="center"; loadScr.style.fontFamily="'Press Start 2P'"; 
-             
-            loadScr.innerHTML = `
-                <div style="margin-bottom:20px;">SEARCHING FOR OPPONENT...</div>
-                <div class="loader-spinner" style="width:40px;height:40px;border:4px solid white;border-top:4px solid transparent;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div>
-                <button onclick="cancelMatchSearch()" style="background:red;color:white;border:2px solid white;padding:10px 20px;font-family:'Press Start 2P';cursor:pointer;">CANCEL</button>
-                <style>@keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>
-            `;
+            loadScr.innerHTML = `<div style="margin-bottom:20px;">SEARCHING FOR OPPONENT...</div><div class="loader-spinner" style="width:40px;height:40px;border:4px solid white;border-top:4px solid transparent;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:20px;"></div><button onclick="cancelMatchSearch()" style="background:red;color:white;border:2px solid white;padding:10px 20px;font-family:'Press Start 2P';cursor:pointer;">CANCEL</button><style>@keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style>`;
             document.getElementById('game-container').appendChild(loadScr);
              
             try {
-                const openMatches = await db.collection('matches')
-                    .where('status', '==', 'searching')
-                    .limit(1)
-                    .get();
-
-                if (!document.getElementById('temp-online-loader')) {
-                    console.log("Search was cancelled by user. Aborting match creation.");
-                    return; 
-                }
+                const openMatches = await db.collection('matches').where('status', '==', 'searching').limit(1).get();
+                if (!document.getElementById('temp-online-loader')) { console.log("Search was cancelled by user. Aborting match creation."); return; }
 
                 if (!openMatches.empty) {
                     const matchDoc = openMatches.docs[0];
                     const data = matchDoc.data();
-
                     if (data.hostId === currentUser.uid) {
                         await db.collection('matches').doc(matchDoc.id).delete();
                         document.getElementById('temp-online-loader').remove();
                         return startOnlineMode(); 
                     }
-
                     activeMatchID = matchDoc.id;
                     myOnlineRole = 'guest';
-                    await db.collection('matches').doc(activeMatchID).update({
-                        guestId: currentUser.uid,
-                        guestName: currentUser.displayName,
-                        status: 'starting',
-                        round: 1,
-                        hostWins: 0,
-                        guestWins: 0
-                    });
+                    await db.collection('matches').doc(activeMatchID).update({ guestId: currentUser.uid, guestName: currentUser.displayName, status: 'starting', round: 1, hostWins: 0, guestWins: 0 });
                 } else {
-                    const newMatch = await db.collection('matches').add({
-                        hostId: currentUser.uid,
-                        hostName: currentUser.displayName,
-                        status: 'searching',
-                        hostScore: 0,
-                        guestScore: 0,
-                        hostStatus: 'alive',
-                        guestStatus: 'alive',
-                        round: 1,
-                        hostWins: 0,
-                        guestWins: 0,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    const newMatch = await db.collection('matches').add({ hostId: currentUser.uid, hostName: currentUser.displayName, status: 'searching', hostScore: 0, guestScore: 0, hostStatus: 'alive', guestStatus: 'alive', round: 1, hostWins: 0, guestWins: 0, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
                     activeMatchID = newMatch.id;
                     myOnlineRole = 'host';
                 }
@@ -1220,19 +1117,10 @@ function MySprite(img_url) {
                     .onSnapshot((doc) => {
                         const data = doc.data();
                         if (!data) return;
-
-                        opponentLastSeen = Date.now(); // Update liveliness
-
-                        if (myOnlineRole === 'host') opponentName = data.guestName || "Opponent";
-                        else opponentName = data.hostName || "Opponent";
-
-                        if (myOnlineRole === 'host') {
-                            if (data.guestY !== undefined) enemyGhostY = data.guestY;
-                            if (data.guestScore !== undefined) enemyGhostScore = data.guestScore;
-                        } else {
-                            if (data.hostY !== undefined) enemyGhostY = data.hostY;
-                            if (data.hostScore !== undefined) enemyGhostScore = data.hostScore;
-                        }
+                        opponentLastSeen = Date.now(); 
+                        if (myOnlineRole === 'host') opponentName = data.guestName || "Opponent"; else opponentName = data.hostName || "Opponent";
+                        if (myOnlineRole === 'host') { if (data.guestY !== undefined) enemyGhostY = data.guestY; if (data.guestScore !== undefined) enemyGhostScore = data.guestScore; } 
+                        else { if (data.hostY !== undefined) enemyGhostY = data.hostY; if (data.hostScore !== undefined) enemyGhostScore = data.hostScore; }
 
                         if (data.status === 'starting' && document.getElementById('temp-online-loader')) {
                             document.getElementById('temp-online-loader').remove();
@@ -1254,45 +1142,23 @@ function MySprite(img_url) {
                             if (data.hostStatus === 'crashed') enemyHasCrashed = true; else enemyHasCrashed = false;
                         }
 
-                        if (data.round > online_round) {
-                            online_round = data.round;
-                            resetOnlineRound();
-                            triggerFlash("white");
-                        }
-                         
-                        if ((data.hostWins >= 2 || data.guestWins >= 2) && data.status !== 'ended') {
-                             endMatchLogic(data);
-                        }
+                        if (data.round > online_round) { online_round = data.round; resetOnlineRound(); triggerFlash("white"); }
+                        if ((data.hostWins >= 2 || data.guestWins >= 2) && data.status !== 'ended') { endMatchLogic(data); }
                     });
 
-            } catch(e) {
-                console.error("Matchmaking error:", e);
-                const loader = document.getElementById('temp-online-loader');
-                if(loader) loader.remove();
-                alert("Matchmaking failed. Try again.");
-                quitToMenu();
-            }
+            } catch(e) { console.error("Matchmaking error:", e); const loader = document.getElementById('temp-online-loader'); if(loader) loader.remove(); alert("Matchmaking failed. Try again."); quitToMenu(); }
         }
 
         function startGameLoopOnline() {
              reset_game();
              game_mode = 'online_match';
-             online_score_player = 0; 
-             online_score_enemy = 0; 
-             online_round = 1;
-             myWins = 0;
-             enemyWins = 0;
-             
+             online_score_player = 0; online_score_enemy = 0; online_round = 1; myWins = 0; enemyWins = 0;
              resetOnlineRound();
-
              document.getElementById('online-ui').style.display = 'block';
              updateOnlineUI();
-
              document.getElementById('settings-btn').style.display = 'block';
-             
              if (currentSkinKey === 'doordash' || currentSkinKey === 'black') { document.getElementById('dash-btn').style.display = 'flex'; } 
              if (currentSkinKey === 'yellow' || currentSkinKey === 'black') { document.getElementById('bomb-btn').style.display = 'flex'; }
-
              if (!musicMuted) { bgMusic.currentTime = 0; bgMusic.play().catch(e => console.log(e)); }
         }
 
@@ -1300,108 +1166,55 @@ function MySprite(img_url) {
             document.getElementById('p-name').innerText = "YOU (" + myWins + ")";
             document.getElementById('e-name').innerText = opponentName + " (" + enemyWins + ")";
             document.getElementById('p-score').innerText = currentScore;
-             
-            if(enemyHasCrashed) document.getElementById('e-score').innerText = online_score_enemy + " (X)";
-            else document.getElementById('e-score').innerText = online_score_enemy;
-             
+            if(enemyHasCrashed) document.getElementById('e-score').innerText = online_score_enemy + " (X)"; else document.getElementById('e-score').innerText = online_score_enemy;
             document.getElementById('online-round-text').innerText = "ROUND " + online_round + " / 3";
         }
 
         function resetOnlineRound() {
-            pipes = []; // Fix: Clear pipes so they don't overlap in R2
-            bird.y = myCanvas.height / 2;
-            bird.velocity_y = 0;
-            bird.velocity_x = 0; // Ensure no drift
-            currentScore = 0;
-            lastPipeY = 250; 
-            pipe_speed = -2;
-            speedMultiplier = 1;
-            pipe_spawn_timer = 0; // Reset spawn timer
-             
-            // TIMER LOGIC
-            onlineStartTimer = 3; 
-            isRoundStarting = true;
-             
-            myHasCrashed = false;
-            enemyHasCrashed = false;
-             
+            pipes = []; bird.y = myCanvas.height / 2; bird.velocity_y = 0; bird.velocity_x = 0; 
+            currentScore = 0; lastPipeY = 250; pipe_speed = -2; speedMultiplier = 1; pipe_spawn_timer = 0; 
+            onlineStartTimer = 3; isRoundStarting = true;
+            myHasCrashed = false; enemyHasCrashed = false;
             if(activeMatchID) {
                 let updateData = {};
                 if(myOnlineRole === 'host') { updateData.hostStatus = 'alive'; updateData.hostScore = 0; }
                 else { updateData.guestStatus = 'alive'; updateData.guestScore = 0; }
                 db.collection('matches').doc(activeMatchID).update(updateData);
             }
-             
-            updateOnlineUI();
-            flashTimer = 0;
+            updateOnlineUI(); flashTimer = 0;
         }
 
-        // --- NEW FAIR WIN/LOSS LOGIC ---
         function handleOnlineDeath() {
             myHasCrashed = true;
-            if(!sfxMuted) {
-                damageSound.currentTime = 0; 
-                damageSound.play().catch(e => console.warn(e));
-            }
-
+            if(!sfxMuted) { damageSound.currentTime = 0; damageSound.play().catch(e => console.warn(e)); }
             if (!activeMatchID) return triggerGameOver("Connection Error");
 
             let updateData = {};
             if (myOnlineRole === 'host') { updateData.hostStatus = 'crashed'; updateData.hostScore = currentScore; }
             else { updateData.guestStatus = 'crashed'; updateData.guestScore = currentScore; }
-             
-            db.collection('matches').doc(activeMatchID).update(updateData).then(() => {
-                checkRoundResult();
-            });
+            db.collection('matches').doc(activeMatchID).update(updateData).then(() => { checkRoundResult(); });
 
-            ctx.fillStyle = "rgba(0,0,0,0.7)";
-            ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
-            ctx.font = "20px 'Press Start 2P'";
-            ctx.fillStyle = "white";
-            ctx.textAlign = "center";
+            ctx.fillStyle = "rgba(0,0,0,0.7)"; ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+            ctx.font = "20px 'Press Start 2P'"; ctx.fillStyle = "white"; ctx.textAlign = "center";
             ctx.fillText("Waiting for Opponent...", myCanvas.width/2, myCanvas.height/2);
         }
 
         function checkRoundResult() {
-            if (!myHasCrashed) {
-                if (enemyHasCrashed && currentScore > online_score_enemy) {
-                    resolveRound('win');
-                }
-                return;
-            }
-
-            if (enemyHasCrashed) {
-                if (currentScore > online_score_enemy) resolveRound('win');
-                else if (currentScore < online_score_enemy) resolveRound('loss');
-                else resolveRound('draw'); 
-            } 
+            if (!myHasCrashed) { if (enemyHasCrashed && currentScore > online_score_enemy) { resolveRound('win'); } return; }
+            if (enemyHasCrashed) { if (currentScore > online_score_enemy) resolveRound('win'); else if (currentScore < online_score_enemy) resolveRound('loss'); else resolveRound('draw'); } 
         }
 
         function resolveRound(result) {
             if (myOnlineRole !== 'host') return; 
-
-            let newHostWins = myWins;
-            let newGuestWins = enemyWins;
-
-            if (result === 'win') newHostWins++;
-            else if (result === 'loss') newGuestWins++;
-             
-            if (currentScore > online_score_enemy) newHostWins = myWins + 1;
-            else if (online_score_enemy > currentScore) newGuestWins = enemyWins + 1;
-             
-            db.collection('matches').doc(activeMatchID).update({
-                round: online_round + 1,
-                hostWins: newHostWins,
-                guestWins: newGuestWins,
-                hostStatus: 'alive', 
-                guestStatus: 'alive'
-            });
+            let newHostWins = myWins; let newGuestWins = enemyWins;
+            if (result === 'win') newHostWins++; else if (result === 'loss') newGuestWins++;
+            if (currentScore > online_score_enemy) newHostWins = myWins + 1; else if (online_score_enemy > currentScore) newGuestWins = enemyWins + 1;
+            db.collection('matches').doc(activeMatchID).update({ round: online_round + 1, hostWins: newHostWins, guestWins: newGuestWins, hostStatus: 'alive', guestStatus: 'alive' });
         }
 
         function endMatchLogic(data) {
             if (trophyProcessed) return;
             trophyProcessed = true;
-
             let amIHost = (myOnlineRole === 'host');
             let hostWon = (data.hostWins >= 2);
             let iWon = (amIHost && hostWon) || (!amIHost && !hostWon);
@@ -1413,9 +1226,7 @@ function MySprite(img_url) {
             localStorage.setItem('flappyTrophies', onlineTrophies);
             saveUserData();
 
-            if (amIHost) {
-                db.collection('matches').doc(activeMatchID).update({ status: 'ended' });
-            }
+            if (amIHost) { db.collection('matches').doc(activeMatchID).update({ status: 'ended' }); }
             if(unsubscribeMatch) unsubscribeMatch();
 
             setTimeout(() => {
@@ -1426,17 +1237,10 @@ function MySprite(img_url) {
             }, 1000);
         }
         
-        // --- STANDARD GAME LOGIC ---
         window.toggleMusicSwitch = function(isChecked) {
             musicMuted = !isChecked; 
-            if (musicMuted) { 
-                mainMenuMusic.pause(); bgMusic.pause(); voidMusic.pause(); 
-            } else {
-                if (!isPaused && (game_mode === 'running' || game_mode === 'boss' || game_mode === 'online_match')) {
-                    if (currentBGIndex === 4) voidMusic.play(); else bgMusic.play();
-                } else if (game_mode === 'waiting_for_website' || game_mode === 'shop_from_menu') {
-                    mainMenuMusic.play();
-                }
+            if (musicMuted) { mainMenuMusic.pause(); bgMusic.pause(); voidMusic.pause(); } else {
+                if (!isPaused && (game_mode === 'running' || game_mode === 'boss' || game_mode === 'online_match')) { if (currentBGIndex === 4) voidMusic.play(); else bgMusic.play(); } else if (game_mode === 'waiting_for_website' || game_mode === 'shop_from_menu') { mainMenuMusic.play(); }
             }
         }
 
@@ -1449,10 +1253,7 @@ function MySprite(img_url) {
         function spawnChocolate() { let choc = new MySprite(); choc.MyImg = CHOCO_IMG; choc.x = boss.x; choc.y = boss.y + boss.height/2; choc.velocity_x = -6; choc.velocity_y = (bird.y - boss.y) / 40; chocolates.push(choc); }
         function spawnErrorSign() { let err = new MySprite(); err.isError = true; err.x = CANVAS_WIDTH; err.y = Math.random() * (480 - 100); err.velocity_x = -9; errorSigns.push(err); }
         
-        function spawnSecretSign() { 
-            if (secretSign) return; 
-            secretSign = new MySprite(); secretSign.isText = true; secretSign.text = "DOWN HERE"; secretSign.x = CANVAS_WIDTH; secretSign.y = 350; secretSign.velocity_x = -3; 
-        }
+        function spawnSecretSign() { if (secretSign) return; secretSign = new MySprite(); secretSign.isText = true; secretSign.text = "DOWN HERE"; secretSign.x = CANVAS_WIDTH; secretSign.y = 350; secretSign.velocity_x = -3; }
 
         function drawDialogueBox(text) {
             const boxX = 40; const boxY = myCanvas.height - 150; const boxW = myCanvas.width - 80; const boxH = 120;
@@ -1472,19 +1273,14 @@ function MySprite(img_url) {
         function updateBoss() {
             if (boss.movingIn) { boss.x -= 2 * speedMultiplier; if (boss.x <= CANVAS_WIDTH - 180) boss.movingIn = false; let img = (isBoss2 && BOSS2_IMG.complete && BOSS2_IMG.naturalWidth !== 0) ? BOSS2_IMG : BOSS_IMG; if (img.complete && img.naturalWidth !== 0) ctx.drawImage(img, boss.x, boss.y, boss.width, boss.height); return; }
             if (bossIntroState < 4) {
-                document.getElementById('dash-btn').style.display = 'none';
-                document.getElementById('bomb-btn').style.display = 'none';
-
+                document.getElementById('dash-btn').style.display = 'none'; document.getElementById('bomb-btn').style.display = 'none';
                 let img = (isBoss2 && BOSS2_IMG.complete && BOSS2_IMG.naturalWidth !== 0) ? BOSS2_IMG : BOSS_IMG; 
-                if (img.complete && img.naturalWidth !== 0) ctx.drawImage(img, boss.x, boss.y, boss.width, boss.height);
-                else { ctx.fillStyle = "red"; ctx.fillRect(boss.x, boss.y, boss.width, boss.height); } 
-
+                if (img.complete && img.naturalWidth !== 0) ctx.drawImage(img, boss.x, boss.y, boss.width, boss.height); else { ctx.fillStyle = "red"; ctx.fillRect(boss.x, boss.y, boss.width, boss.height); } 
                 if (bossIntroState === 0) { bossIntroState = 1; bossIntroTimer = 120; }
                 if (!isBoss2) { 
                     if (bossIntroState === 1) { drawDialogueBox("oh, here you are"); bossIntroTimer--; if(bossIntroTimer<=0){bossIntroState=2; bossIntroTimer=120;} } 
                     else if (bossIntroState === 2) { drawDialogueBox("I was waiting for you"); bossIntroTimer--; if(bossIntroTimer<=0){bossIntroState=5;} } 
-                } 
-                else { 
+                } else { 
                     if (bossIntroState === 1) { drawDialogueBox("you are getting out of control"); bossIntroTimer--; if(bossIntroTimer<=0){bossIntroState=2; bossIntroTimer=120;} } 
                     else if (bossIntroState === 2) { drawDialogueBox("you werent supposed to come HERE"); bossIntroTimer--; if(bossIntroTimer<=0){bossIntroState=3; bossIntroTimer=120;} } 
                     else if (bossIntroState === 3) { drawDialogueBox("Its too late to go back now...."); bossIntroTimer--; if(bossIntroTimer<=0){bossIntroState=5;} } 
@@ -1496,32 +1292,23 @@ function MySprite(img_url) {
                 return;
             }
             if (bossIntroState === 4) { 
-                document.getElementById('dash-btn').style.display = 'none';
-                document.getElementById('bomb-btn').style.display = 'none';
+                document.getElementById('dash-btn').style.display = 'none'; document.getElementById('bomb-btn').style.display = 'none';
                 let img = (isBoss2 && BOSS2_IMG.complete && BOSS2_IMG.naturalWidth !== 0) ? BOSS2_IMG : BOSS_IMG; 
-                if (img.complete && img.naturalWidth !== 0) ctx.drawImage(img, boss.x, boss.y, boss.width, boss.height);
-                else { ctx.fillStyle = "red"; ctx.fillRect(boss.x, boss.y, boss.width, boss.height); }
-                
+                if (img.complete && img.naturalWidth !== 0) ctx.drawImage(img, boss.x, boss.y, boss.width, boss.height); else { ctx.fillStyle = "red"; ctx.fillRect(boss.x, boss.y, boss.width, boss.height); }
                 drawDialogueBox("YOU ARE MAKING A\nBIG MISTAKE"); 
                 bossIntroTimer--; 
                 if (bossIntroTimer <= 0) { 
                     unlockAchievement('true_end');
-                    // --- HARDCORE ACHIEVEMENT CHECK ---
-                    if (currentSkinKey === 'default') {
-                        unlockAchievement('hardcore');
-                        showCheatFeedback("HARDCORE UNLOCKED!");
-                    }
+                    if (currentSkinKey === 'default') { unlockAchievement('hardcore'); showCheatFeedback("HARDCORE UNLOCKED!"); }
                     collectedStars += 500; localStorage.setItem('flappyStars', collectedStars); 
                     game_mode = 'true_end_sequence'; endSequenceStep = -1; endSequenceTimer = 200; endSequenceAlpha = 0; 
-                    document.getElementById('dash-btn').style.display = 'none'; 
-                    document.getElementById('bomb-btn').style.display = 'none'; 
+                    document.getElementById('dash-btn').style.display = 'none'; document.getElementById('bomb-btn').style.display = 'none'; 
                 } 
                 return; 
             }
             boss.y += boss.speedY * speedMultiplier; if (boss.y > 300 || boss.y < 50) boss.speedY *= -1; 
             let fightImg = (isBoss2 && BOSS2_IMG.complete && BOSS2_IMG.naturalWidth !== 0) ? BOSS2_IMG : BOSS_IMG; 
-            if (fightImg.complete && fightImg.naturalWidth !== 0) ctx.drawImage(fightImg, boss.x, boss.y, boss.width, boss.height);
-            else { ctx.fillStyle = "red"; ctx.fillRect(boss.x, boss.y, boss.width, boss.height); }
+            if (fightImg.complete && fightImg.naturalWidth !== 0) ctx.drawImage(fightImg, boss.x, boss.y, boss.width, boss.height); else { ctx.fillStyle = "red"; ctx.fillRect(boss.x, boss.y, boss.width, boss.height); }
 
             if (!isBoss2) { if (Math.random() < 0.06) spawnChocolate(); boss.stamina -= 0.1; if (boss.stamina <= 0) { unlockAchievement('monster'); triggerFlash("lime"); collectedStars += 100; localStorage.setItem('flappyStars', collectedStars); showCheatFeedback("BOSS DEFEATED! +100 STARS"); currentLives += 2; showCheatFeedback("BOSS DEFEATED! +2 LIVES"); victoryTimer = 100; game_mode = 'running'; currentScore = 51; boss.x = CANVAS_WIDTH + 500; chocolates = []; pipe_spawn_timer = 0; bossIntroState = 0; boss.movingIn = true; boss.stamina = 100; } } 
             else { 
@@ -1538,8 +1325,7 @@ function MySprite(img_url) {
                 const skin = SKINS[key]; 
                 if (availableSkins.includes(key)) { 
                     if (!skin.current) { 
-                        for (let k in SKINS) { SKINS[k].current = false; } 
-                        skin.current = true; 
+                        for (let k in SKINS) { SKINS[k].current = false; } skin.current = true; 
                         let tempImg = new Image(); tempImg.onload = function() { bird.MyImg = tempImg; }; tempImg.src = skin.src; 
                         currentSkinKey = key; localStorage.setItem('currentSkin', key); 
                         if (currentSkinKey === 'yellow' || currentSkinKey === 'black') { wallDestroyCharges = MAX_DESTROY_CHARGES; } 
@@ -1551,22 +1337,17 @@ function MySprite(img_url) {
                     collectedStars -= skin.cost; availableSkins.push(key); 
                     if(!sfxMuted){buySound.currentTime = 0; buySound.play().catch(e => console.warn(e));}
                     localStorage.setItem('flappyStars', collectedStars); localStorage.setItem('flappySkins', JSON.stringify(availableSkins)); 
-                    updateMenuStats(); 
-                    saveUserData(); 
-                    purchaseOrEquipSkin(key); 
+                    updateMenuStats(); saveUserData(); purchaseOrEquipSkin(key); 
                 } 
             } 
             else if (TRAILS[key] && shopCategory === 'trails') { 
                 const trail = TRAILS[key]; 
-                if (availableTrails.includes(key)) { 
-                    if (!trail.current) { for (let k in TRAILS) { TRAILS[k].current = false; } trail.current = true; currentTrailKey = key; localStorage.setItem('currentTrail', key); } 
-                } else if (collectedStars >= trail.cost) { 
+                if (availableTrails.includes(key)) { if (!trail.current) { for (let k in TRAILS) { TRAILS[k].current = false; } trail.current = true; currentTrailKey = key; localStorage.setItem('currentTrail', key); } } 
+                else if (collectedStars >= trail.cost) { 
                     collectedStars -= trail.cost; availableTrails.push(key); 
                     if(!sfxMuted){buySound.currentTime = 0; buySound.play().catch(e => console.warn(e));}
                     localStorage.setItem('flappyStars', collectedStars); localStorage.setItem('flappyTrails', JSON.stringify(availableTrails)); 
-                    updateMenuStats(); 
-                    saveUserData(); 
-                    purchaseOrEquipSkin(key); 
+                    updateMenuStats(); saveUserData(); purchaseOrEquipSkin(key); 
                 } 
             }
         }
@@ -1598,9 +1379,7 @@ function MySprite(img_url) {
         function updateDifficulty() { let level = currentBGIndex; pipe_speed = -2 - level; currentSpawnInterval = 2500 - (level * 300); if (currentSpawnInterval < 1000) currentSpawnInterval = 1000; }
 
         function add_pipe(x_pos, top_of_gap, gap_width) {
-            // --- FIX: NO PIPES IF SECRET ENDING HAS SPAWNED ---
             if (secretSign) return;
-
             if (isBoss2 && game_mode === 'running') { let isTop = Math.random() < 0.5; let wall = new MySprite(); wall.isText = true; wall.text = "undefined"; wall.x = x_pos; wall.velocity_x = pipe_speed; if (isTop) wall.y = top_of_gap - 50; else wall.y = top_of_gap + gap_width + 50; if (currentBGIndex === 4) { wall.oscillate = true; wall.baseY = wall.y; wall.phase = Date.now(); } pipes.push(wall); return; }
             if (currentScore === 98 && !secretSign && !isEndless) { spawnSecretSign(); }
             
@@ -1608,11 +1387,18 @@ function MySprite(img_url) {
             var top_pipe = new MySprite(); top_pipe.MyImg = pipe_piece; top_pipe.x = x_pos; top_pipe.y = newGapY - pipe_piece.height; top_pipe.velocity_x = pipe_speed;
             var bottom_pipe = new MySprite(); bottom_pipe.MyImg = pipe_piece; bottom_pipe.flipV = true; bottom_pipe.x = x_pos; bottom_pipe.y = newGapY + gap_width; bottom_pipe.velocity_x = pipe_speed;
             
-            let voidPhase = 0; if (currentBGIndex === 4) { voidPhase = Date.now(); top_pipe.oscillate = true; top_pipe.baseY = top_pipe.y; top_pipe.phase = voidPhase; bottom_pipe.oscillate = true; bottom_pipe.baseY = bottom_pipe.y; bottom_pipe.phase = voidPhase; }
+            // --- UPDATED: VOID MOVEMENT IN ENDLESS MODE > 50 SCORE ---
+            let voidPhase = 0; 
+            if (currentBGIndex === 4 || (isEndless && currentScore >= 50)) { 
+                voidPhase = Date.now(); 
+                top_pipe.oscillate = true; top_pipe.baseY = top_pipe.y; top_pipe.phase = voidPhase; 
+                bottom_pipe.oscillate = true; bottom_pipe.baseY = bottom_pipe.y; bottom_pipe.phase = voidPhase; 
+            }
+            
             pipes.push(top_pipe); pipes.push(bottom_pipe);
             if (!hasPortalSpawnedInThisArea && currentBGIndex !== 4 && Math.random() < PORTAL_CHANCE && !isBoss2 && game_mode !== 'online_match' && !isEndless) { top_pipe.visible = false; bottom_pipe.visible = false; let p = new MySprite(); p.MyImg = PORTAL_IMG; p.parentPipe = bottom_pipe; p.y = myCanvas.height / 2 - 50; portals.push(p); hasPortalSpawnedInThisArea = true; }
 
-            function syncVoidItem(obj, yPos) { obj.x = x_pos + 16; obj.y = yPos; obj.velocity_x = pipe_speed; if (currentBGIndex === 4) { obj.oscillate = true; obj.baseY = obj.y; obj.phase = voidPhase; } return obj; }
+            function syncVoidItem(obj, yPos) { obj.x = x_pos + 16; obj.y = yPos; obj.velocity_x = pipe_speed; if (currentBGIndex === 4 || (isEndless && currentScore >= 50)) { obj.oscillate = true; obj.baseY = obj.y; obj.phase = voidPhase; } return obj; }
             let rand = Math.random();
             if (rand < SHIELD_SPAWN_CHANCE) { let newShield = new MySprite(); newShield.MyImg = SHIELD_IMG; shields.push(syncVoidItem(newShield, newGapY + gap_width/2 - 32)); } else if (rand < SHIELD_SPAWN_CHANCE + POTION_SPAWN_CHANCE) { let newPotion = new MySprite(); newPotion.MyImg = POTION_IMG; potions.push(syncVoidItem(newPotion, newGapY + gap_width/2 - 15)); } else if (rand < SHIELD_SPAWN_CHANCE + POTION_SPAWN_CHANCE + SLOW_POTION_SPAWN_CHANCE) { if (currentScore > 20) { let newSlow = new MySprite(); newSlow.MyImg = SLOW_POTION_IMG; slowPotions.push(syncVoidItem(newSlow, newGapY + gap_width/2 - 15)); } }
             let currentStarChance = 0.5 + (currentBGIndex * 0.1); if (Math.random() < currentStarChance) { let newStar = new MySprite(); newStar.MyImg = STAR_IMG; stars.push(syncVoidItem(newStar, newGapY + gap_width*0.75 - 10)); }
@@ -1623,32 +1409,18 @@ function MySprite(img_url) {
 
         function triggerGameOver(msg) {
             if (game_mode === 'over') return; 
-            
             if (currentScore === 69) { unlockAchievement('interesting'); } if (isBoss2) { unlockAchievement('error_death'); }
             
-            // --- UPDATE SCORES BASED ON MODE ---
             if (isEndless) {
-                if (currentScore > endlessHighScore) { 
-                    endlessHighScore = currentScore; 
-                    localStorage.setItem('flappyEndlessHighScore', endlessHighScore); 
-                    msg = "NEW ENDLESS RECORD!";
-                }
+                if (currentScore > endlessHighScore) { endlessHighScore = currentScore; localStorage.setItem('flappyEndlessHighScore', endlessHighScore); msg = "NEW ENDLESS RECORD!"; }
             } else {
-                if (currentScore > highScore) { 
-                    highScore = currentScore; 
-                    localStorage.setItem('flappyHighScore', highScore); 
-                }
+                if (currentScore > highScore) { highScore = currentScore; localStorage.setItem('flappyHighScore', highScore); }
             }
             
-            totalGamesPlayed++;
-            localStorage.setItem('flappyGamesPlayed', totalGamesPlayed);
-            
-            // Trigger Cloud Save (which updates Leaderboards)
+            totalGamesPlayed++; localStorage.setItem('flappyGamesPlayed', totalGamesPlayed);
             saveUserData(); 
             deathMessage = msg || "Game Over"; game_mode = 'over';
-            
             document.getElementById('settings-btn').style.display = 'none';
-
             document.getElementById('delete-boss-btn').style.display = 'none'; document.getElementById('dash-btn').style.display = 'none'; document.getElementById('bomb-btn').style.display = 'none'; document.getElementById('game-container').className = ""; 
             if(!musicMuted) mainMenuMusic.play().catch(e=>{});
             bgMusic.pause(); voidMusic.pause();
@@ -1678,7 +1450,6 @@ function MySprite(img_url) {
             for (let i = portals.length - 1; i >= 0; i--) { portals[i].Do_Frame_Things(); if (ImagesTouching(bird, portals[i])) { triggerPortalEffect(); portals.splice(i, 1); } }
         }
 
-        // --- UPDATED SCORE CHECK: ENDLESS MODE LOGIC ---
         function check_for_score_increase() {
             for (var i = 0; i < pipes.length; i += 2) {
                 if (isBoss2 && pipes[i].isText) { const p = pipes[i]; if (p.x + 180 < bird.x && p.passed === false) { currentScore++; p.passed = true; } continue; }
@@ -1686,26 +1457,19 @@ function MySprite(img_url) {
                 if (topPipe && topPipe.x + topPipe.MyImg.width < bird.x && topPipe.passed === false) {
                     currentScore++; topPipe.passed = true; if (pipes[i+1]) pipes[i+1].passed = true;
                     
-                    // --- ENDLESS MODE LOGIC ---
+                    // --- UPDATED ENDLESS LOGIC ---
                     if (isEndless) {
-                         if (currentScore > 0 && currentScore % 50 === 0) { // Every 50 points
-                             if (currentBGIndex < 4) { 
-                                 currentBGIndex++; 
-                                 transitionText = AREA_NAMES[currentBGIndex]; 
-                                 transitionTimer = 80;
-                             } else {
-                                 // Already at Void, loop sounds or just keep getting harder
-                                 triggerFlash("purple");
-                             }
-                             // SPEED INCREASE
+                         if (currentScore > 0 && currentScore % 50 === 0) { 
+                             // Speed increase only, NO background change
                              pipe_speed -= 0.5; 
                              currentSpawnInterval -= 200;
                              if(currentSpawnInterval < 800) currentSpawnInterval = 800;
-
+                             // Apply new speed
                              [pipes, shields, stars, potions, slowPotions, portals].forEach(arr => { arr.forEach(obj => { obj.velocity_x = pipe_speed; }); });
+                             
+                             if (currentScore === 50) { triggerFlash("purple"); showCheatFeedback("VOID GRAVITY ACTIVE!"); }
                          }
                     } 
-                    // --- STORY MODE LOGIC ---
                     else if (currentScore % 10 === 0 && currentScore > 0 && currentBGIndex < 4 && game_mode !== 'online_match') {
                         currentBGIndex++; updateDifficulty(); pipe_spawn_timer = 0; 
                         [pipes, shields, stars, potions, slowPotions, portals].forEach(arr => { arr.forEach(obj => { obj.velocity_x = pipe_speed; }); });
@@ -1738,7 +1502,7 @@ function MySprite(img_url) {
             if (game_mode === 'online_match') return; 
             ctx.font = 'bold 24px Arial'; ctx.textAlign = 'left'; ctx.strokeStyle = 'black'; ctx.lineWidth = 3;
             let displayStr = 'Score: ' + currentScore; if (currentBGIndex === 4 && Math.random() < 0.1) { displayStr = "Sc#re: " + Math.floor(Math.random()*999); }
-            if (isEndless) displayStr = 'Endless: ' + currentScore; // Label Endless
+            if (isEndless) displayStr = 'Endless: ' + currentScore; 
             ctx.strokeText(displayStr, 10, 115); ctx.fillStyle = 'white'; ctx.fillText(displayStr, 10, 115); 
         }
 
@@ -1782,7 +1546,6 @@ function MySprite(img_url) {
             if (currentSkinKey === 'doordash' || currentSkinKey === 'black') { dashCharges = 5; }
             document.getElementById('dash-btn').style.display = 'none';
             document.getElementById('bomb-btn').style.display = 'none';
-            // Start centered
             lastPipeY = 250;
             add_pipe(CANVAS_WIDTH, 100, 140); deactivateShield(true); voidMusic.pause(); voidMusic.currentTime = 0;
             document.getElementById('jumpscare-vid').style.display = 'none';
@@ -1796,46 +1559,21 @@ function MySprite(img_url) {
                 if (isPaused && game_mode !== 'online_match') return; 
                 if (!ctx) return;
                 
-                // --- ONLINE TIMER START ---
                 if (game_mode === 'online_match' && isRoundStarting) {
-                    // Clear BG
                     if (backgroundImages[currentBGIndex] && backgroundImages[currentBGIndex].complete) { ctx.drawImage(backgroundImages[currentBGIndex], 0, 0, myCanvas.width, myCanvas.height); }
                     else { ctx.fillStyle = "#222"; ctx.fillRect(0,0,myCanvas.width,myCanvas.height); }
-                    
                     bird.Do_Frame_Things();
-                    
-                    // Draw Pipes static
-                    for(let i=0; i<pipes.length; i++) {
-                        let p = pipes[i];
-                        ctx.drawImage(p.MyImg, p.x, p.y);
-                    }
-                    
-                    // Draw Ghost static (UPDATED: Fix Stretch)
+                    for(let i=0; i<pipes.length; i++) { let p = pipes[i]; ctx.drawImage(p.MyImg, p.x, p.y); }
                     if(activeMatchID && !enemyHasCrashed) {
-                         ctx.save();
-                         ctx.globalAlpha = 0.4;
-                         // Use natural dimensions or fallback to 50
-                         let ghostW = bird.MyImg.width || 50;
-                         let ghostH = bird.MyImg.height || 50;
-                         if(bird.MyImg && bird.MyImg.complete && bird.MyImg.naturalWidth !== 0) {
-                             ghostW = bird.MyImg.width; ghostH = bird.MyImg.height;
-                         }
-                         ctx.drawImage(bird.MyImg, bird.x, enemyGhostY, ghostW, ghostH);
-                         ctx.restore();
+                         ctx.save(); ctx.globalAlpha = 0.4;
+                         let ghostW = bird.MyImg.width || 50; let ghostH = bird.MyImg.height || 50;
+                         if(bird.MyImg && bird.MyImg.complete && bird.MyImg.naturalWidth !== 0) { ghostW = bird.MyImg.width; ghostH = bird.MyImg.height; }
+                         ctx.drawImage(bird.MyImg, bird.x, enemyGhostY, ghostW, ghostH); ctx.restore();
                     }
-
-                    // Draw Timer
-                    ctx.font = 'bold 80px "Press Start 2P"'; 
-                    ctx.fillStyle = "white"; 
-                    ctx.textAlign = "center"; 
-                    ctx.lineWidth = 4; ctx.strokeStyle="black";
-                    let displayText = Math.ceil(onlineStartTimer);
-                    if(displayText <= 0) displayText = "GO!";
-                    ctx.strokeText(displayText, myCanvas.width/2, myCanvas.height/2);
-                    ctx.fillText(displayText, myCanvas.width/2, myCanvas.height/2);
-
-                    onlineStartTimer -= (1/FPS);
-                    if (onlineStartTimer <= -0.5) { isRoundStarting = false; roundStartTime = Date.now(); }
+                    ctx.font = 'bold 80px "Press Start 2P"'; ctx.fillStyle = "white"; ctx.textAlign = "center"; ctx.lineWidth = 4; ctx.strokeStyle="black";
+                    let displayText = Math.ceil(onlineStartTimer); if(displayText <= 0) displayText = "GO!";
+                    ctx.strokeText(displayText, myCanvas.width/2, myCanvas.height/2); ctx.fillText(displayText, myCanvas.width/2, myCanvas.height/2);
+                    onlineStartTimer -= (1/FPS); if (onlineStartTimer <= -0.5) { isRoundStarting = false; roundStartTime = Date.now(); }
                     return;
                 }
                 
@@ -1855,23 +1593,12 @@ function MySprite(img_url) {
                     case 'running':
                         time_game_last_running = new Date(); bottom_bar_offset += pipe_speed * speedMultiplier;
                         
-                        // --- ENDLESS MODE CHECK: SKIP BOSSES ---
-                        if (!isEndless && currentScore > 0 && currentScore % 50 === 0 && currentScore < 100) { 
-                            game_mode = 'boss'; pipes = []; 
-                        } 
-                        else if (!isEndless && currentScore >= 100) { 
-                             game_mode = 'boss'; pipes = []; isBoss2 = true; boss2Hits = 0; 
-                        } 
+                        if (!isEndless && currentScore > 0 && currentScore % 50 === 0 && currentScore < 100) { game_mode = 'boss'; pipes = []; } 
+                        else if (!isEndless && currentScore >= 100) { game_mode = 'boss'; pipes = []; isBoss2 = true; boss2Hits = 0; } 
                         else { 
-                            // NORMAL OR ENDLESS PIPE LOGIC
                             for (var i = 0; i < pipes.length; i++) { pipes[i].Do_Frame_Things(); } 
                             pipe_spawn_timer += (1000 / FPS) * speedMultiplier; 
-                            if (pipe_spawn_timer > currentSpawnInterval) { 
-                                let gap_size = 140; 
-                                let top_of_gap = Math.floor(Math.random() * (myCanvas.height - 300)) + 50; 
-                                add_pipe(myCanvas.width, top_of_gap, gap_size); 
-                                pipe_spawn_timer = 0; 
-                            } 
+                            if (pipe_spawn_timer > currentSpawnInterval) { let gap_size = 140; let top_of_gap = Math.floor(Math.random() * (myCanvas.height - 300)) + 50; add_pipe(myCanvas.width, top_of_gap, gap_size); pipe_spawn_timer = 0; } 
                         }
                         
                         make_bird_slow_and_fall(); check_for_end_game(); check_for_score_increase();
@@ -1885,53 +1612,32 @@ function MySprite(img_url) {
                             for (var i = 0; i < pipes.length; i++) { pipes[i].Do_Frame_Things(); } 
                             pipe_spawn_timer += (1000 / FPS) * speedMultiplier; 
                             if (pipe_spawn_timer > currentSpawnInterval) { let gap_size = 140; let top_of_gap = Math.floor(Math.random() * (myCanvas.height - 300)) + 50; add_pipe(myCanvas.width, top_of_gap, gap_size); pipe_spawn_timer = 0; }
-                            make_bird_slow_and_fall(); 
-                            check_for_end_game(); 
-                            check_for_score_increase();
+                            make_bird_slow_and_fall(); check_for_end_game(); check_for_score_increase();
                             [pipes, shields, stars, potions, slowPotions].forEach(arr => { for (let i = arr.length - 1; i >= 0; i--) { if (arr[i].x < -100) arr.splice(i, 1); else if (arr !== pipes) arr[i].Do_Frame_Things(); } });
                             
-                            // GHOST DRAWING (UPDATED: Correct Aspect Ratio)
                             if(!enemyHasCrashed) {
-                                ctx.save();
-                                ctx.globalAlpha = 0.5; // Slightly more visible
-                                
-                                // Calculate relative X
+                                ctx.save(); ctx.globalAlpha = 0.5;
                                 let relativeX = bird.x + ((online_score_enemy - currentScore) * 60); 
-                                
-                                // Correct Dimensions (Prevent Stretch)
                                 let ghostW = 50; let ghostH = 50;
-                                if(bird.MyImg && bird.MyImg.complete && bird.MyImg.naturalWidth !== 0) {
-                                     ghostW = bird.MyImg.width;
-                                     ghostH = bird.MyImg.height;
-                                }
-
+                                if(bird.MyImg && bird.MyImg.complete && bird.MyImg.naturalWidth !== 0) { ghostW = bird.MyImg.width; ghostH = bird.MyImg.height; }
                                 ctx.drawImage(bird.MyImg, relativeX, enemyGhostY, ghostW, ghostH); 
                                 ctx.fillStyle = "white"; ctx.font = "10px Arial"; ctx.textAlign="center";
                                 ctx.fillText(opponentName, relativeX + (ghostW/2), enemyGhostY - 5);
                                 ctx.restore();
                             }
                             
-                            // GHOST SYNC & DISCONNECT CHECK
                             let now = Date.now();
                             if (now - lastGhostUpdate > 200 && activeMatchID) { 
                                 lastGhostUpdate = now;
                                 let posData = {};
-                                if (myOnlineRole === 'host') posData.hostY = bird.y;
-                                else posData.guestY = bird.y;
+                                if (myOnlineRole === 'host') posData.hostY = bird.y; else posData.guestY = bird.y;
                                 db.collection('matches').doc(activeMatchID).update(posData).catch(e=>{});
                             }
                             
-                            // CHECK FOR OPPONENT DISCONNECT (5 seconds silence)
                             if (opponentLastSeen > 0 && (now - opponentLastSeen) > 5000 && !enemyHasCrashed) {
-                                 enemyHasCrashed = true; 
-                                 showCheatFeedback("OPPONENT DISCONNECTED!");
-                                 // Force win round if I am alive
-                                 checkRoundResult(); 
+                                 enemyHasCrashed = true; showCheatFeedback("OPPONENT DISCONNECTED!"); checkRoundResult(); 
                             }
-
-                        } else {
-                            handleOnlineDeath();
-                        }
+                        } else { handleOnlineDeath(); }
                         updateOnlineUI(); 
                         break;
                     case 'over':
@@ -1954,14 +1660,7 @@ function MySprite(img_url) {
                 if (victoryTimer > 0) { ctx.font = 'bold 50px Arial'; ctx.fillStyle = 'lime'; ctx.strokeStyle = 'black'; ctx.lineWidth = 5; ctx.textAlign = 'center'; ctx.strokeText("VICTORY!", myCanvas.width/2, myCanvas.height/2); ctx.fillText("VICTORY!", myCanvas.width/2, myCanvas.height/2); victoryTimer--; }
                 if (transitionTimer > 0) { ctx.font = 'bold 40px Arial'; ctx.fillStyle = 'white'; ctx.strokeStyle = 'black'; ctx.lineWidth = 4; ctx.textAlign = 'center'; ctx.strokeText(transitionText, myCanvas.width / 2, myCanvas.height / 2); ctx.fillText(transitionText, myCanvas.width / 2, myCanvas.height / 2); transitionTimer--; }
                 if (flashTimer > 0) { ctx.fillStyle = flashColor; ctx.fillRect(0, 0, myCanvas.width, myCanvas.height); flashTimer--; }
-            } catch(e) {
-                console.error(e);
-                isPaused = true;
-                ctx.fillStyle = 'red';
-                ctx.font = '12px monospace';
-                ctx.fillText("CRASH ERROR: " + e.message, 10, 20);
-                ctx.fillText("Check console for details", 10, 40);
-            }
+            } catch(e) { console.error(e); isPaused = true; ctx.fillStyle = 'red'; ctx.font = '12px monospace'; ctx.fillText("CRASH ERROR: " + e.message, 10, 20); ctx.fillText("Check console for details", 10, 40); }
         }
 
         let lastSkinIndex = 0;
@@ -1971,7 +1670,7 @@ function MySprite(img_url) {
             if (MyEvent.target.closest('#pause-menu') || MyEvent.target.closest('#mode-select-modal')) return;
             
             if (isPaused && game_mode !== 'online_match') return; 
-            if (game_mode === 'online_match' && isRoundStarting) return; // Block input during count down
+            if (game_mode === 'online_match' && isRoundStarting) return; 
             
             let clickX = 0; let clickY = 0;
             if (MyEvent.type === 'touchstart' || MyEvent.type === 'mousedown') {
